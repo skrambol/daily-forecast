@@ -1,66 +1,88 @@
 import { useState } from "react";
 import weatherService from "./services/weather";
 import Forecast from "./components/Forecast";
-// import './App.css'
+import "./App.css";
 
 function App() {
   const [query, setQuery] = useState("");
   const [cities, setCities] = useState([]);
   const [city, setCity] = useState({});
   const [forecast, setForecast] = useState({});
+  const [error, setError] = useState("");
 
   function searchCity(event) {
     event.preventDefault();
 
-    weatherService.citySearch(query).then((data) => {
-      setCities(data);
-      setCity({});
-    });
+    if (query === "") return;
+
+    weatherService
+      .citySearch(query)
+      .then((data) => {
+        setCities(data);
+        setCity({});
+        setError("");
+      })
+      .catch((_error) => {
+        setError("A problem ocurred. Please try again later.");
+      });
   }
 
   function getForecast(city) {
-    weatherService.forecastFiveDays(city.Key).then((data) => {
-      setForecast(data);
-      setCities([]);
-      setCity(city);
-    });
+    weatherService
+      .forecastFiveDays(city.Key)
+      .then((data) => {
+        setForecast(data);
+        setCities([]);
+        setCity(city);
+        setError("");
+      })
+      .catch((_error) => {
+        setCities([]);
+        setError("A problem ocurred. Please try again later.");
+      });
   }
 
   return (
-    <>
+    <div className="container mx-auto my-4 flex flex-col gap-4">
+      <h1 className="text-4xl text-center">Weather Forecast</h1>
       <div>
-        <form onSubmit={searchCity}>
+        <form onSubmit={searchCity} className="flex gap-2">
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="enter city"
+            className="border px-2 py-1"
           />
-          <button type="submit">search</button>
+          <button
+            type="submit"
+            className="border rounded bg-neutral-300 px-2 py-1 hover:bg-neutral-200"
+          >
+            search
+          </button>
         </form>
+        <p className="text-red-500">{error}</p>
+        <ul className="flex flex-col">
+          {cities.map((city) => {
+            return (
+              <li
+                key={city.Key}
+                onClick={() => {
+                  getForecast(city);
+                }}
+                className="border p-2 hover:bg-neutral-200"
+              >
+                <span>{city.EnglishName}, </span>
+                <span>{city.AdministrativeArea.EnglishName} </span>
+                <span className="text-neutral-500 italic">
+                  {city.Country.ID}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       </div>
-      <ul>
-        {cities.map((city) => {
-          return (
-            <li key={city.Key}>
-              <span>{city.EnglishName}, </span>
-              <span>
-                {city.AdministrativeArea.EnglishName}{" "}
-                {city.AdministrativeArea.EnglishType}{" "}
-              </span>
-              <span>
-                <i>
-                  ({city.Region.EnglishName}, {city.Country.EnglishName}){" "}
-                </i>
-              </span>
-              <button onClick={() => getForecast(city)}>
-                get five day forecast
-              </button>
-            </li>
-          );
-        })}
-      </ul>
       <Forecast forecast={forecast} city={city} />
-    </>
+    </div>
   );
 }
 
