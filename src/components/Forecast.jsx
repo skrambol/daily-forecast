@@ -49,6 +49,7 @@ function DailyForecast({ forecast }) {
 
 function Forecast({ forecast, city }) {
   if (Object.keys(forecast).length === 0) return null;
+  if (Object.keys(city).length === 0) return null;
 
   return (
     <div className="flex flex-col gap-4">
