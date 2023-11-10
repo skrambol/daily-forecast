@@ -18,8 +18,10 @@ function App() {
       .citySearch(query)
       .then((data) => {
         if (data.length === 0) {
-          setError("No city found using your query. Please enter another city.")
-          return
+          setError(
+            "No city found using your query. Please enter another city.",
+          );
+          return;
         }
 
         setCities(data);
