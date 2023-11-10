@@ -1,8 +1,27 @@
-# React + Vite
+## Installing on local (with Docker)
+1. Build the docker image
+```
+docker build -t daily-forecast .
+```
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+2. Run a container using the image built previously. Take note to replace `<your_api_key>` with your own AccuWeather API key.
+```
+docker run --name daily-forecast-dev -p 5173:5173 -e VITE_ACCUWEATHER_API_KEY=<your_api_key> daily-forecast
+```
 
-Currently, two official plugins are available:
+3. Visit `localhost:5173` in your web browser.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+## Installing on local (without Docker)
+
+1. Install npm dependencies.
+```
+npm install
+```
+
+2. Run the dev environment. Take note to replace `<your_api_key>` with your own AccuWeather API key.
+```
+VITE_ACCUWEATHER_API_KEY=<your_api_key> npm run dev
+```
+
+3. Visit `localhost:5173` in your web browser.
