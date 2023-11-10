@@ -1,7 +1,6 @@
 import { useState } from "react";
 import weatherService from "./services/weather";
 import Forecast from "./components/Forecast";
-import "./App.css";
 
 function App() {
   const [query, setQuery] = useState("");
@@ -18,6 +17,11 @@ function App() {
     weatherService
       .citySearch(query)
       .then((data) => {
+        if (data.length === 0) {
+          setError("No city found using your query. Please enter another city.")
+          return
+        }
+
         setCities(data);
         setCity({});
         setError("");
